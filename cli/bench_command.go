@@ -367,9 +367,19 @@ func (c *benchCmd) bench(_ *fisk.ParseContext) error {
 
 		ctx, cancel := context.WithTimeout(context.Background(), c.jsTimeout)
 		defer cancel()
-		js2, err := jetstream.New(nc)
+
+		var js2 jetstream.JetStream
+
+		switch {
+		case opts.JsDomain != "":
+			js2, err = jetstream.NewWithDomain(nc, opts.JsDomain)
+		case opts.JsApiPrefix != "":
+			js2, err = jetstream.NewWithAPIPrefix(nc, opts.JsApiPrefix)
+		default:
+			js2, err = jetstream.New(nc)
+		}
 		if err != nil {
-			log.Fatalf("Couldn't get the new API JetStream context: %v", err)
+			log.Fatalf("Couldn't get the new API JetStream instance: %v", err)
 		}
 
 		if c.kv {
@@ -763,9 +773,18 @@ func kvPutter(c benchCmd, nc *nats.Conn, progress *uiprogress.Bar, msg []byte, n
 	ctx, cancel := context.WithTimeout(context.Background(), c.jsTimeout)
 	defer cancel()
 
-	js2, err := jetstream.New(nc)
+	var js2 jetstream.JetStream
+
+	switch {
+	case opts.JsDomain != "":
+		js2, err = jetstream.NewWithDomain(nc, opts.JsDomain)
+	case opts.JsApiPrefix != "":
+		js2, err = jetstream.NewWithAPIPrefix(nc, opts.JsApiPrefix)
+	default:
+		js2, err = jetstream.New(nc)
+	}
 	if err != nil {
-		log.Fatalf("Couldn't get the new API JetStream context: %v", err)
+		log.Fatalf("Couldn't get the new API JetStream instance: %v", err)
 	}
 
 	if c.newJSAPI {
@@ -968,9 +987,19 @@ func (c *benchCmd) runSubscriber(bm *bench.Benchmark, nc *nats.Conn, startwg *sy
 
 			ctx, cancel := context.WithTimeout(context.Background(), c.jsTimeout)
 			defer cancel()
-			js2, err := jetstream.New(nc)
+
+			var js2 jetstream.JetStream
+
+			switch {
+			case opts.JsDomain != "":
+				js2, err = jetstream.NewWithDomain(nc, opts.JsDomain)
+			case opts.JsApiPrefix != "":
+				js2, err = jetstream.NewWithAPIPrefix(nc, opts.JsApiPrefix)
+			default:
+				js2, err = jetstream.New(nc)
+			}
 			if err != nil {
-				log.Fatalf("Couldn't get the new API JetStream context: %v", err)
+				log.Fatalf("Couldn't get the new API JetStream instance: %v", err)
 			}
 
 			// start the timer now rather than when the first message is received in JS mode
@@ -1069,9 +1098,18 @@ func (c *benchCmd) runSubscriber(bm *bench.Benchmark, nc *nats.Conn, startwg *sy
 			ctx, cancel := context.WithTimeout(context.Background(), c.jsTimeout)
 			defer cancel()
 
-			js2, err := jetstream.New(nc)
+			var js2 jetstream.JetStream
+
+			switch {
+			case opts.JsDomain != "":
+				js2, err = jetstream.NewWithDomain(nc, opts.JsDomain)
+			case opts.JsApiPrefix != "":
+				js2, err = jetstream.NewWithAPIPrefix(nc, opts.JsApiPrefix)
+			default:
+				js2, err = jetstream.New(nc)
+			}
 			if err != nil {
-				log.Fatalf("Couldn't get the new API JetStream context: %v", err)
+				log.Fatalf("Couldn't get the new API JetStream instance: %v", err)
 			}
 
 			kvBucket, err := js2.KeyValue(ctx, c.bucketName)
