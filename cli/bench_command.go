@@ -1028,7 +1028,7 @@ func (c *benchCmd) runSubscriber(bm *bench.Benchmark, nc *nats.Conn, startwg *sy
 					}
 				}
 				if c.push {
-					cc, err := consumer.Consume(mh2, jetstream.PullMaxMessages(c.consumerBatch), jetstream.AutoStopAfter(numMsg))
+					cc, err := consumer.Consume(mh2, jetstream.PullMaxMessages(c.consumerBatch), jetstream.StopAfter(numMsg))
 					if err != nil {
 						return
 					}
