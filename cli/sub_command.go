@@ -495,9 +495,9 @@ func (c *subCmd) printMsg(msg *nats.Msg, reply *nats.Msg, ctr uint) {
 
 		if info == nil {
 			if msg.Reply != "" {
-				fmt.Printf("[#%d] Received on %q with reply %q\n", ctr, msg.Subject, msg.Reply)
+				fmt.Printf("[#%d] Received at %v on %q with reply %q\n", ctr, time.Now().UnixMilli(), msg.Subject, msg.Reply)
 			} else {
-				fmt.Printf("[#%d] Received on %q\n", ctr, msg.Subject)
+				fmt.Printf("[#%d] Received at %v on %q\n", ctr, time.Now().UnixMilli(), msg.Subject)
 			}
 		} else if c.jetStream {
 			fmt.Printf("[#%d] Received JetStream message: stream: %s seq %d / subject: %s / time: %v\n", ctr, info.Stream(), info.StreamSequence(), msg.Subject, info.TimeStamp().Format(time.RFC3339))
