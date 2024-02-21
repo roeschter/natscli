@@ -1208,7 +1208,7 @@ func (c *benchCmd) runSubscriber(bm *bench.Benchmark, nc *nats.Conn, startwg *sy
 
 			if c.newJSAPI {
 				if c.pull {
-					msgs, err := consumer.Fetch(batchSize)
+					msgs, err := consumer.FetchNoWait(batchSize)
 					if err == nil && msgs.Error() == nil {
 						if progress != nil {
 							state = "Fetching  "
