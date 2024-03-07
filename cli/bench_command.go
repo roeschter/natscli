@@ -138,7 +138,7 @@ Remember to use --no-progress to measure performance more accurately
 	bench.Flag("stream", "When set to something else than \"benchstream\": use (and do not attempt to define) the specified stream when creating durable subscribers. Otherwise define and use the \"benchstream\" stream").Default(DefaultStreamName).StringVar(&c.streamName)
 	bench.Flag("bucket", "When set to something else than \"benchbucket\": use (and do not attempt to define) the specified bucket when in KV mode. Otherwise define and use the \"benchbucket\" bucket").Default(DefaultBucketName).StringVar(&c.bucketName)
 	bench.Flag("consumer", "Specify the durable consumer name to use").Default(DefaultDurableConsumerName).StringVar(&c.consumerName)
-	bench.Flag("jstimeout", "Timeout for JS operations").Default("30s").DurationVar(&c.jsTimeout)
+	bench.Flag("js-timeout", "Timeout for JS operations").Default("30s").DurationVar(&c.jsTimeout)
 	bench.Flag("syncpub", "Synchronously publish to the stream").UnNegatableBoolVar(&c.syncPub)
 	bench.Flag("pubbatch", "Sets the batch size for JS asynchronous publishing").Default("100").IntVar(&c.pubBatch)
 	bench.Flag("newjsapi", "Uses the new JetStream API, unlike with the legacy API there is no concept of push or pull consumers but the arguments are re-used to inform the choice of the subscribers consuming either by registering a callback (--push mode) or by fetching batches of messages (--pull mode) from the (shared durable) consumer (setting neither means each subscriber uses it own ephemeral consumer)").Default("true").BoolVar(&c.newJSAPI)
@@ -1212,7 +1212,7 @@ func (c *benchCmd) runSubscriber(bm *bench.Benchmark, nc *nats.Conn, startwg *sy
 
 			if c.newJSAPI {
 				if c.pull {
-					msgs, err := consumer.FetchNoWait(batchSize)
+					msgs, err := consumer.Fetch(batchSize)
 					if err == nil && msgs.Error() == nil {
 						if progress != nil {
 							state = "Fetching  "
