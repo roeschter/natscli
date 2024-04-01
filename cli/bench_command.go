@@ -1212,24 +1212,30 @@ func (c *benchCmd) runSubscriber(bm *bench.Benchmark, nc *nats.Conn, startwg *sy
 
 			if c.newJSAPI {
 				if c.pull {
-					msgs, err := consumer.Fetch(batchSize)
-					if err == nil && msgs.Error() == nil {
-						if progress != nil {
-							state = "Fetching  "
+					consumer.Messages()
+				}
+				msgs, err := consumer.Fetch(batchSize)
+				if err != nil {
+					if c.noProgress {
+						if err == nats.ErrTimeout {
+							log.Print("Fetch  timeout!")
+						} else {
+							log.Printf("New consumer Fetch error: %v", err)
 						}
+						c.fetchTimeout = true
+					}
 
-						for msg := range msgs.Messages() {
-							mh2(msg)
-							i++
-						}
-					} else {
-						if c.noProgress {
-							if err == nats.ErrTimeout {
-								log.Print("Fetch  timeout!")
-							} else {
-								log.Printf("New consumer Fetch error: %v", err)
-							}
-						}
+					if progress != nil {
+						state = "Fetching  "
+					}
+
+					for msg := range msgs.Messages() {
+						mh2(msg)
+						i++
+					}
+
+					if msgs.Error() != nil {
+						log.Printf("New consumer Fetch msgs error: %v", msgs.Error())
 						c.fetchTimeout = true
 					}
 				}
