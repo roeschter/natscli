@@ -130,6 +130,8 @@ func configureServerCheckCommand(srv *fisk.CmdClause) {
 		msgHeadersMatch: make(map[string]string),
 	}
 
+	Test
+
 	check := srv.Command("check", "Health check for NATS servers")
 	check.Flag("format", "Render the check in a specific format (nagios, json, prometheus, text)").Default("nagios").EnumVar(&checkRenderFormatText, "nagios", "json", "prometheus", "text")
 	check.Flag("namespace", "The prometheus namespace to use in output").Default(opts().PrometheusNamespace).StringVar(&opts().PrometheusNamespace)
